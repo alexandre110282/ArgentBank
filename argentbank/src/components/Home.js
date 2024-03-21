@@ -1,10 +1,14 @@
 import IconChat from "../img/icon-chat.png";
 import IconMoney from '../img/icon-money.png';
 import IconSecurity from '../img/icon-security.png';
+import Header from './Header';
+import Footer from './Footer';
+
 import "../css/main.css"
 
 const Home = () => {
   return (<>
+  <Header />
     <main>
       <div className="hero">
         <section className="hero-content">
@@ -50,6 +54,7 @@ const Home = () => {
         </div>
       </section>
     </main>
+    <Footer />
   </>
   )
 }

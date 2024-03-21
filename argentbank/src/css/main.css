@@ -177,7 +177,9 @@ body {
 .sign-in-icon {
   font-size: 5rem;
 }
-
+.iconFont{
+  margin-right: 5px;
+}
 .input-remember {
   display: flex;
 }
