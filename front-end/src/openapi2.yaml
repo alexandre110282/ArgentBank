@@ -1,0 +1,243 @@
+swagger: "2.0"
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: "1.0.0"
+  termsOfService: "http://swagger.io/terms/"
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /user/login:
+    post:
+      tags:
+        - User Module
+      summary: Login
+      description: API for Login
+      parameters:
+        - in: body
+          name: body
+          description: Login Payload
+          required: true
+          schema:
+            $ref: "#/definitions/Login"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Login Successfully
+          schema:
+            $ref: "#/definitions/LoginResponse"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server Error
+  /user/signup:
+    post:
+      tags:
+        - User Module
+      summary: Signup
+      description: API for Signup
+      parameters:
+        - in: body
+          name: body
+          description: Signup Payload
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Signup Successfully
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server Error
+  /user/profile:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for fetching a user profile
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server Error
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get all transactions for the current month grouped by account
+      description: Retrieve all transactions for the current month, grouped by account
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Successfully retrieved transactions
+          schema:
+            $ref: "#/definitions/TransactionGroupedByAccount"
+        "400":
+          description: Invalid Request
+        "500":
+          description: Internal Server Error
+
+  /transaction/{transactionId}:
+    get:
+      tags:
+        - Transactions
+      summary: Get transaction details
+      description: Retrieve details of a specific transaction
+      parameters:
+        - in: path
+          name: transactionId
+          description: ID of the transaction to retrieve
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Successfully retrieved transaction details
+          schema:
+            $ref: "#/definitions/TransactionDetails"
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+
+  /transaction/{transactionId}/update:
+    put:
+      tags:
+        - Transactions
+      summary: Update transaction details
+      description: Update information about a specific transaction
+      parameters:
+        - in: path
+          name: transactionId
+          description: ID of the transaction to update
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Updated transaction details
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionUpdate"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transaction details updated successfully
+          schema:
+            $ref: "#/definitions/Transactioninfo"
+        "400":
+          description: Invalid Fields
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  User:
+    properties:
+      email: {}
+  Login:
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+  LoginResponse:
+    properties:
+      token:
+        type: string
+  ApiResponse:
+    properties:
+      message:
+        type: string
+  TransactionGroupedByAccount:
+    type: object
+    properties:
+      accounts:
+        type: array
+        items:
+          $ref: "#/definitions/AccountTransactionGroup"
+  AccountTransactionGroup:
+    type: object
+    properties:
+      accountId:
+        type: string
+      transactions:
+        type: array
+        items:
+          $ref: "#/definitions/Transaction"
+
+  Transaction:
+    type: object
+    properties:
+      transactionId:
+        type: string
+      accountId:
+        type: string
+      amount:
+        type: number
+      description:
+        type: string
+      date:
+        type: string
+        format: date-time
+
+  TransactionDetails:
+    type: object
+    properties:
+      transactionId:
+        type: string
+      accountId:
+        type: string
+      amount:
+        type: number
+      description:
+        type: string
+      date:
+        type: string
+        format: date-time
+
+  TransactionUpdate:
+    type: object
+    properties:
+      Note:
+        type: string
+      category:
+        type: string
+  Transactioninfo:
+    type: object
+    properties:
+      transactionId:
+        type: string
+      accountId:
+        type: string
+      amount:
+        type: number
+      category:
+        type: string
+      note:
+        type: string
+      date:
+        type: string
+        format: date-time
