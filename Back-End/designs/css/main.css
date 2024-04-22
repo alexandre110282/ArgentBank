@@ -70,14 +70,7 @@ body {
   width: 200px;
 }
 
-.hero {
-  background-image: url('../img/bank-tree.jpeg');
-  background-position: 0 -50px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 300px;
-  position: relative;
-}
+
 
 .hero-content {
   position: relative;
