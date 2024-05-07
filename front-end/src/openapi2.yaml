@@ -82,6 +82,8 @@ paths:
       description: Retrieve all transactions for the current month, grouped by account
       produces:
         - application/json
+      security:
+        - Bearer: []
       responses:
         "200":
           description: Successfully retrieved transactions
@@ -106,6 +108,8 @@ paths:
           type: string
       produces:
         - application/json
+      security:
+        - Bearer: []
       responses:
         "200":
           description: Successfully retrieved transaction details
@@ -136,6 +140,8 @@ paths:
             $ref: "#/definitions/TransactionUpdate"
       produces:
         - application/json
+      security:
+        - Bearer: []
       responses:
         "200":
           description: Transaction details updated successfully

@@ -22,6 +22,8 @@ export const signIn = async (username, password, dispatch, navigate) => {
       if (response.ok) {
         const responseData = await response.json();
         const token = responseData.body.token;
+        sessionStorage.setItem('token', token);
+        console.log('Token stocké dans le sessionStorage', token)
         dispatch(setToken(token));           
         navigate('/users');
       } else {

@@ -5,42 +5,39 @@ import { fetchUserProfile } from '../Redux/api/callAuth.jsx';
 
 const UserProfile = () => {
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token); 
   const [isEditing, setIsEditing] = useState(false);
   const dispatch = useDispatch();
+  const storedToken = sessionStorage.getItem('token'); // Continuer d'utiliser sessionStorage ici
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        await fetchUserProfile(token, dispatch); // Utilisez le token récupéré ici
-      } catch (error) {
-        console.error('Une erreur s\'est produite lors de la récupération du profil :', error);
+      if (storedToken) { // Assurez-vous que le token existe avant de faire l'appel
+        try {
+          await fetchUserProfile(storedToken, dispatch); // Utiliser directement storedToken
+        } catch (error) {
+          console.error('Une erreur s\'est produite lors de la récupération du profil :', error);
+        }
       }
     };
 
     fetchData();
-  }, [token, dispatch]); // Ajoutez `token` à la liste des dépendances
-  
+  }, [storedToken, dispatch]); // Utiliser uniquement storedToken et dispatch dans les dépendances
 
   const handleEditButtonClick = () => {
     setIsEditing(true);
-  }; 
-
+  };
 
   return (
     <main className="main bg-dark">
       <div className="header">
-        <div>
         {!isEditing && <h1>Welcome back<br />{user.userName}</h1>}
-        </div>
         {isEditing ? (
           <EditProfileForm onCancel={() => setIsEditing(false)} />
         ) : (
           <div className='edit-button-container'>
             <button className="edit-button" onClick={handleEditButtonClick}>
-              Edit Name
+              Modifier le nom
             </button>
-            
           </div>
         )}
       </div>

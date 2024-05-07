@@ -11,6 +11,7 @@ function Nav() {
   const token = useSelector((state) => state.auth.token);
 
   const handleLogout = () => {
+    sessionStorage.clear();
     navigate('/')
     // Dispatchez l'action de déconnexion ici
     dispatch(logout());    
