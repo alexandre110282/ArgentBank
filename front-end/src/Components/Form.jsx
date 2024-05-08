@@ -14,8 +14,9 @@ const Form = () => {
   useEffect(() => {
     const storedUsername = localStorage.getItem('rememberedUsername');
     const storedPassword = localStorage.getItem('rememberedPassword');
+    const storedRememberMe = localStorage.getItem('rememberedRememberMe');
 
-    if (storedUsername && storedPassword) {
+    if (storedUsername && storedPassword && storedRememberMe === 'true') {
       setUsername(storedUsername);
       setPassword(storedPassword);
       setRememberMe(true);
@@ -28,9 +29,12 @@ const Form = () => {
       if (rememberMe) {
         localStorage.setItem('rememberedUsername', username);
         localStorage.setItem('rememberedPassword', password);
+        localStorage.setItem('rememberedRememberMe', 'true');
       } else {
+        // Si Remember Me n'est pas coché, effacez les informations stockées
         localStorage.removeItem('rememberedUsername');
         localStorage.removeItem('rememberedPassword');
+        localStorage.removeItem('rememberedRememberMe');
       }
     } catch (error) {
       setError("Erreur lors de la connexion. Veuillez vérifier vos identifiants.");
@@ -55,7 +59,15 @@ const Form = () => {
           <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <div className="input-remember">
-          <input type="checkbox" id="remember-me" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+          <input type="checkbox" id="remember-me" checked={rememberMe} onChange={(e) => {
+            setRememberMe(e.target.checked);
+            // Si l'utilisateur décoche "Remember Me", effacez les informations stockées
+            if (!e.target.checked) {
+              localStorage.removeItem('rememberedUsername');
+              localStorage.removeItem('rememberedPassword');
+              localStorage.removeItem('rememberedRememberMe');
+            }
+          }} />
           <label htmlFor="remember-me">Remember me</label>
         </div> 
         {error && <div className="error-message">{error}</div>}              

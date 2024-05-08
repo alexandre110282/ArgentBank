@@ -31,6 +31,8 @@ paths:
             $ref: "#/definitions/LoginResponse"
         "400":
           description: Invalid Fields
+        "401":
+          description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
   /user/signup:
@@ -55,6 +57,8 @@ paths:
             $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Fields
+        "401":
+          description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
   /user/profile:
@@ -72,14 +76,50 @@ paths:
             $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Fields
+        "401":
+          description: Unauthorized - Invalid Token
+        "500":
+          description: Internal Server Error
+  /accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Get all accounts
+      description: Retrieve all accounts belonging to the authenticated user
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: Successfully retrieved accounts
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Account"
+        "401":
+          description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
   /transactions:
     get:
       tags:
         - Transactions
-      summary: Get all transactions for the current month grouped by account
-      description: Retrieve all transactions for the current month, grouped by account
+      summary: Get transactions for a specific account over a period
+      description: Retrieve transactions for a specified account over the last three months or a custom date range
+      parameters:
+        - in: query
+          name: accountId
+          required: true
+          type: string
+        - in: query
+          name: startDate
+          type: string
+          format: date
+        - in: query
+          name: endDate
+          type: string
+          format: date
       produces:
         - application/json
       security:
@@ -91,41 +131,16 @@ paths:
             $ref: "#/definitions/TransactionGroupedByAccount"
         "400":
           description: Invalid Request
+        "401":
+          description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
-
   /transaction/{transactionId}:
-    get:
+    patch:
       tags:
         - Transactions
-      summary: Get transaction details
-      description: Retrieve details of a specific transaction
-      parameters:
-        - in: path
-          name: transactionId
-          description: ID of the transaction to retrieve
-          required: true
-          type: string
-      produces:
-        - application/json
-      security:
-        - Bearer: []
-      responses:
-        "200":
-          description: Successfully retrieved transaction details
-          schema:
-            $ref: "#/definitions/TransactionDetails"
-        "404":
-          description: Transaction not found
-        "500":
-          description: Internal Server Error
-
-  /transaction/{transactionId}/update:
-    put:
-      tags:
-        - Transactions
-      summary: Update transaction details
-      description: Update information about a specific transaction
+      summary: Update transaction details partially
+      description: Partially update information about a specific transaction. Allows addition, deletion, or modification of notes and categories.
       parameters:
         - in: path
           name: transactionId
@@ -149,11 +164,12 @@ paths:
             $ref: "#/definitions/Transactioninfo"
         "400":
           description: Invalid Fields
+        "401":
+          description: Unauthorized - Invalid Token
         "404":
           description: Transaction not found
         "500":
           description: Internal Server Error
-
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -162,7 +178,8 @@ securityDefinitions:
 definitions:
   User:
     properties:
-      email: {}
+      email:
+        type: string
   Login:
     properties:
       username:
@@ -195,21 +212,6 @@ definitions:
           $ref: "#/definitions/Transaction"
 
   Transaction:
-    type: object
-    properties:
-      transactionId:
-        type: string
-      accountId:
-        type: string
-      amount:
-        type: number
-      description:
-        type: string
-      date:
-        type: string
-        format: date-time
-
-  TransactionDetails:
     type: object
     properties:
       transactionId:

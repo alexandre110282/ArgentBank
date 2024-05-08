@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import EditProfileForm from '../Components/EditProfilForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile } from '../Redux/api/callAuth.jsx';
+import Transactions from '../Components/Transactions.jsx';
 
 const UserProfile = () => {
   const user = useSelector((state) => state.auth.user);
@@ -41,6 +42,7 @@ const UserProfile = () => {
           </div>
         )}
       </div>
+      <Transactions />
     </main>
   );
 };
