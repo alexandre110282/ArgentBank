@@ -1,9 +1,9 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: "1.0.0"
-  termsOfService: "http://swagger.io/terms/"
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
 host: localhost:3001
 basePath: /api/v1
 schemes:
@@ -21,19 +21,19 @@ paths:
           description: Login Payload
           required: true
           schema:
-            $ref: "#/definitions/Login"
+            $ref: '#/definitions/Login'
       produces:
         - application/json
       responses:
-        "200":
+        '200':
           description: Login Successfully
           schema:
-            $ref: "#/definitions/LoginResponse"
-        "400":
+            $ref: '#/definitions/LoginResponse'
+        '400':
           description: Invalid Fields
-        "401":
-          description: Unauthorized - Invalid Token
-        "500":
+        '401':
+          description: Unauthorized - Token required
+        '500':
           description: Internal Server Error
   /user/signup:
     post:
@@ -47,19 +47,17 @@ paths:
           description: Signup Payload
           required: true
           schema:
-            $ref: "#/definitions/User"
+            $ref: '#/definitions/User'
       produces:
         - application/json
       responses:
-        "200":
+        '200':
           description: Signup Successfully
           schema:
-            $ref: "#/definitions/ApiResponse"
-        "400":
+            $ref: '#/definitions/ApiResponse'
+        '400':
           description: Invalid Fields
-        "401":
-          description: Unauthorized - Invalid Token
-        "500":
+        '500':
           description: Internal Server Error
   /user/profile:
     post:
@@ -70,39 +68,47 @@ paths:
       summary: User Profile API
       description: API for fetching a user profile
       responses:
-        "200":
+        '200':
           description: User profile retrieved successfully
           schema:
-            $ref: "#/definitions/ApiResponse"
-        "400":
+            $ref: '#/definitions/ApiResponse'
+        '400':
           description: Invalid Fields
-        "401":
-          description: Unauthorized - Invalid Token
-        "500":
+        '401':
+          description: Unauthorized - Token required
+        '500':
           description: Internal Server Error
-  /accounts:
-    get:
-      tags:
-        - Accounts
-      summary: Get all accounts
-      description: Retrieve all accounts belonging to the authenticated user
-      produces:
-        - application/json
+    put:
       security:
         - Bearer: []
-      responses:
-        "200":
-          description: Successfully retrieved accounts
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for updating a user profile
+      parameters:
+        - in: body
+          name: body
+          description: Update user profile attributes
+          required: true
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Account"
-        "401":
-          description: Unauthorized - Invalid Token
-        "500":
+            $ref: '#/definitions/UserProfile'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '401':
+          description: Unauthorized - Token required
+        '500':
           description: Internal Server Error
-  /account/transactions:
+  /transactions:
     get:
+      security:
+        - Bearer: []
       tags:
         - Transactions
       summary: Get transactions for a specific account over a period
@@ -122,8 +128,6 @@ paths:
           format: date
       produces:
         - application/json
-      security:
-        - Bearer: []
       responses:
         "200":
           description: Successfully retrieved transactions
@@ -135,40 +139,65 @@ paths:
           description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
-  /account/transaction/{transactionId}:
-    put:
+  /transaction/{transactionId}:
+    get:
+      security:
+        - Bearer: []
       tags:
         - Transactions
-      summary: Update transaction details 
-      description: update information about a specific transaction. Allows addition, deletion, or modification of notes and categories.
+      summary: Transaction Details
+      description: API to view details of a transaction
       parameters:
         - in: path
           name: transactionId
-          description: ID of the transaction to update
+          description: Transaction ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionDetailsResponse'
+        '401':
+          description: Unauthorized - Token required
+        '404':
+          description: Transaction not found
+        '500':
+          description: Internal Server Error
+  /transaction/{transactionId}/edit:
+    patch: # Changed from PUT to PATCH
+      security:
+        - Bearer: []
+      tags:
+        - Transactions
+      summary: Edit a Transaction
+      description: API to edit details of a transaction
+      parameters:
+        - in: path
+          name: transactionId
+          description: Transaction ID
           required: true
           type: string
         - in: body
           name: body
-          description: Updated transaction details
+          description: New transaction details
           required: true
           schema:
-            $ref: "#/definitions/TransactionUpdate"
+            $ref: '#/definitions/TransactionEdit'
       produces:
         - application/json
-      security:
-        - Bearer: []
       responses:
-        "200":
-          description: Transaction details updated successfully
+        '200':
+          description: Transaction updated successfully
           schema:
-            $ref: "#/definitions/Transactioninfo"
-        "400":
+            $ref: '#/definitions/ApiResponse'
+        '400':
           description: Invalid Fields
-        "401":
-          description: Unauthorized - Invalid Token
-        "404":
+        '401':
+          description: Unauthorized - Token required
+        '404':
           description: Transaction not found
-        "500":
+        '500':
           description: Internal Server Error
 securityDefinitions:
   Bearer:
@@ -180,41 +209,75 @@ definitions:
     properties:
       email:
         type: string
-  Login:
-    properties:
-      username:
-        type: string
+        description: user email
       password:
         type: string
+        description: user password
+      firstName:
+        type: string
+        description: user first name
+      lastName:
+        type: string
+        description: user last name
+      userName:
+        type: string
+        description: user public name
+  Login:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+  ApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          id:
+            type: string
+          email:
+            type: string
   LoginResponse:
+    type: object
     properties:
       token:
         type: string
-  ApiResponse:
+  UserProfile:
+    type: object
     properties:
-      message:
+      userName:
         type: string
-  TransactionGroupedByAccount:
+  TransactionResponse:
     type: object
     properties:
-      accounts:
-        type: array
-        items:
-          $ref: "#/definitions/AccountTransactionGroup"
-  AccountTransactionGroup:
-    type: object
-    properties:
-      accountId:
+      status:
+        type: string
+      message:
         type: string
       transactions:
         type: array
         items:
-          $ref: "#/definitions/Transaction"
-
+          $ref: '#/definitions/Transaction'
+  TransactionDetailsResponse:
+    type: object
+    properties:
+      status:
+        type: string
+      message:
+        type: string
+      transaction:
+        $ref: '#/definitions/Transaction'
   Transaction:
     type: object
     properties:
-      transactionId:
+      id:
         type: string
       accountId:
         type: string
@@ -224,28 +287,10 @@ definitions:
         type: string
       date:
         type: string
-        format: date-time
-
-  TransactionUpdate:
+  TransactionEdit:
     type: object
     properties:
-      Note:
-        type: string
-      category:
-        type: string
-  Transactioninfo:
-    type: object
-    properties:
-      transactionId:
-        type: string
-      accountId:
-        type: string
       amount:
         type: number
-      category:
+      description:
         type: string
-      note:
-        type: string
-      date:
-        type: string
-        format: date-time
