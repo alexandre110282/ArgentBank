@@ -12,7 +12,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken) { // Assurez-vous que le token existe avant de faire l'appel
+      if (storedToken) { // Vérification si le token existe avant de faire l'appel
         try {
           await fetchUserProfile(storedToken, dispatch); // Utiliser directement storedToken
         } catch (error) {

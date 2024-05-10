@@ -101,7 +101,7 @@ paths:
           description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
-  /transactions:
+  /account/transactions:
     get:
       tags:
         - Transactions
@@ -135,12 +135,12 @@ paths:
           description: Unauthorized - Invalid Token
         "500":
           description: Internal Server Error
-  /transaction/{transactionId}:
-    patch:
+  /account/transaction/{transactionId}:
+    put:
       tags:
         - Transactions
-      summary: Update transaction details partially
-      description: Partially update information about a specific transaction. Allows addition, deletion, or modification of notes and categories.
+      summary: Update transaction details 
+      description: update information about a specific transaction. Allows addition, deletion, or modification of notes and categories.
       parameters:
         - in: path
           name: transactionId
